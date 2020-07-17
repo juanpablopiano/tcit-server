@@ -13,24 +13,24 @@ app.post("/posts", async (req, res) => {
 	try {
 		const { name, description } = req.body;
 		const newPost = await pool.query(
-			"INSERT INTO post (name, description) VALUES ($1, $2) RETURNING *",
+			"INSERT INTO post (name, description) VALUES ($1, $2) RETURNING *;",
 			[name, description]
 		);
 
 		res.json(newPost.rows[0]);
 	} catch (error) {
-		console.log(error.message);
+		console.error(error.message);
 	}
 });
 
 // GET ALL POSTS
 app.get("/posts", async (req, res) => {
 	try {
-		const allPosts = await pool.query("SELECT * FROM post");
+		const allPosts = await pool.query("SELECT * FROM post;");
 
 		res.json(allPosts.rows);
 	} catch (error) {
-		console.log(error.message);
+		console.error(error.message);
 	}
 });
 
@@ -39,13 +39,13 @@ app.get("/posts/:id", async (req, res) => {
 	try {
 		const { id } = req.params;
 
-		const post = await pool.query("SELECT * FROM post WHERE post_id = $1", [
+		const post = await pool.query('SELECT * FROM post WHERE "postId" = $1;', [
 			id,
 		]);
 
 		res.json(post.rows[0]);
 	} catch (error) {
-		console.log(error.message);
+		console.error(error.message);
 	}
 });
 
@@ -56,12 +56,12 @@ app.put("/posts/:id", async (req, res) => {
 		const { name, description } = req.body;
 
 		const updatedPost = await pool.query(
-			"UPDATE post SET name = $1, description = $2 WHERE post_id = $3 RETURNING *",
+			'UPDATE post SET name = $1, description = $2 WHERE "postId" = $3 RETURNING *;',
 			[name, description, id]
 		);
 		res.json(updatedPost.rows[0]);
 	} catch (error) {
-		console.log(error.message);
+		console.error(error.message);
 	}
 });
 
@@ -69,11 +69,11 @@ app.put("/posts/:id", async (req, res) => {
 app.delete("/posts/:id", async (req, res) => {
 	try {
 		const { id } = req.params;
-		const deletedPost = await pool.query("DELETE FROM post WHERE post_id = $1 RETURNING *;", [id]);
+		const deletedPost = await pool.query('DELETE FROM post WHERE "postId" = $1 RETURNING *;', [id]);
 
 		res.json(deletedPost.rows[0]);
 	} catch (error) {
-		console.log(error.message);
+		console.error(error.message);
 	}
 })
 
